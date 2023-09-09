@@ -2,7 +2,7 @@
 
 -- This program is licensed under the terms of the MIT License.
 --
--- Copyright (c) 2021 Munehiro Yamamoto <munepixyz@gmail.com>
+-- Copyright (c) 2021-2023 Munehiro Yamamoto <munepixyz@gmail.com>
 --
 -- Permission is hereby granted, free of charge, to any person obtaining a copy
 -- of this software and associated documentation files (the "Software"), to deal
@@ -22,20 +22,31 @@
 -- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 -- THE SOFTWARE.
 
+local line_ctr = 0
 for line in io.lines(arg[1]) do
+   line_ctr = line_ctr + 1
+   if line_ctr > 20 then break end
+
    if string.match(line, "^%%#!") then
       tex_cmd, err=string.gsub(line, "%%#!", "")
       tex_return = os.execute(tex_cmd)
 
-      if tex_return == -1 then
-         print("Invalid TeX-style shebang.\n")
+      -- if os.execute(texcmd) returns -1 on Windows, then
+      -- cmd.exe is not included in PATH, or some invalid string found before cmd.exe
+      if os.type == 'windows' and tex_return == -1 then
+         print("Invalid PATH setting found. Please ensure that cmd.exe can be found.\n")
          os.exit(1)
       end
+
+      -- if not tex_return == 0 then
+      --    print("TeX-style shebang processing of the below failed.\n" .. tex_cmd .. "\n")
+      --    os.exit(1)
+      -- end
 
       os.exit(0)
 
    -- else
-   --    print ("TeX-style shebang not match.\n")
+   --    print("TeX-style shebang not matched.\n")
    end
 end
 
