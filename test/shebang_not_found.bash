@@ -2,7 +2,7 @@
 set -euxo pipefail
 cd "$(dirname "$0")/"
 
-__runtexshebang="$(dirname "$0")/"../runtexshebang.lua
+__runtexshebang=../runtexshebang.lua
 texfile=$(basename $0 .bash).tex
 falsemsg='TeX-style shebang not found.'
 
