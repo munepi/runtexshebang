@@ -23,7 +23,7 @@
 -- THE SOFTWARE.
 
 if not ( #arg == 1 ) then
-   print("runtexshebang 20230909 v0.1")
+   print("runtexshebang 20230909 v0.2")
    print("")
    print("Usage:	runtexshebang  [input.tex]")
    os.exit(0)
