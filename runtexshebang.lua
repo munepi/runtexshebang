@@ -22,6 +22,13 @@
 -- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 -- THE SOFTWARE.
 
+if not ( #arg == 1 ) then
+   print("runtexshebang 20230909 v0.1")
+   print("")
+   print("Usage:	runtexshebang  [input.tex]")
+   os.exit(0)
+end
+
 local line_ctr = 0
 for line in io.lines(arg[1]) do
    line_ctr = line_ctr + 1
