@@ -1,3 +1,7 @@
+##DONOT use TEXMFDIST if you are not a distributor.
+TLTEXMF=$(shell kpsewhich --var-value=TEXMFLOCAL)
+TLBINDIR=$(shell which texlua | sed s,/texlua,,)
+
 .DEFAULT_GOAL := help
 .PHONY: help
 help: ## Show this help
@@ -13,3 +17,18 @@ all: test
 test: ## Test runtexshebang.lua
 	test/shebang_matched.bash
 	test/shebang_not_found.bash
+
+.PHONY: install uninstall
+install: ## Install runtexshebang
+	mkdir -p ${TLTEXMF}/scripts/runtexshebang/
+	mkdir -p ${TLTEXMF}/doc/support/runtexshebang/
+	cp -a runtexshebang.lua ${TLTEXMF}/scripts/runtexshebang/
+	cp -a README.md LICENSE ${TLTEXMF}/doc/support/runtexshebang/
+
+	cd ${TLBINDIR}/ && \
+		ln -f -s ${TLTEXMF}/scripts/runtexshebang/runtexshebang.lua runtexshebang
+
+uninstall: ## Unnstall runtexshebang
+	rm -rf ${TLTEXMF}/scripts/runtexshebang/
+	rm -rf ${TLTEXMF}/doc/support/runtexshebang/
+	rm -f ${TLBINDIR}/runtexshebang
