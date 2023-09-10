@@ -19,8 +19,8 @@ Happy {\TeX}ing.
 ```
 
 If you are using a TeX-style shebang, it must appear on the line that 
-matched 20 lines or less in your script, and it has to start with 
-a TeX comment symbol followed by a hash sign (#) and an exclamation mark (!), 
+matched 20 lines or less in your LaTeX document, and it has to start with 
+a TeX comment symbol (`%`) followed by a hash sign (`#`) and an exclamation mark (`!`), 
 colloquially known as the bang, hence the name shebang for TeX/LaTeX. 
 
 
