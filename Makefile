@@ -1,6 +1,6 @@
 ##DONOT use TEXMFDIST if you are not a distributor.
-TLTEXMF=$(shell kpsewhich --var-value=TEXMFLOCAL)
-TLBINDIR=$(shell which texlua | sed s,/texlua,,)
+TLTEXMF=${DESTDIR}$(shell kpsewhich --var-value=TEXMFLOCAL)
+TLBINDIR=${DESTDIR}$(shell which texlua | sed s,/texlua,,)
 
 .DEFAULT_GOAL := help
 .PHONY: help
