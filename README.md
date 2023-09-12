@@ -158,7 +158,14 @@ You can typeset a LaTeX document file in a Docker container as below.
 
 ## References
 
+### Commentary
+
 * [TeXworks、TeXShop、VSCodeでTeX-style shebangしてみた - Qiita](https://qiita.com/munepi/items/a30c68133cfffbf4d189) (in Japanese)
+
+### Tools supporting `%#!`
+
+* [YaTeX](https://www.yatex.org/): Yet Another TeX mode for Emacs
+* [llmk](https://github.com/wtsnjp/llmk): Light LaTeX Make
 
 
 
