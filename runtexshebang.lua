@@ -30,6 +30,11 @@ Usage:	runtexshebang [input.tex]
 Options:
 	-h, --help	print help
 	-v, --version	print version
+
+See also:
+The command
+	texdoc runtexshebang
+should give you access to the README.
 ]]
 
 function whoami()
