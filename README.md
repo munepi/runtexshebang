@@ -131,7 +131,7 @@ There the “Engine” settings for the command lines "TeX+dvipdfmx / TeX+dvips+
 ### How about general configuration information for the activated TeX Live version and its configuration in my editor?
 
 ``` latex
-%#! tlmgr --conf
+%#! tlmgr conf
 ```
 
 ### Otherwise
