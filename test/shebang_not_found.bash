@@ -3,8 +3,8 @@ set -euxo pipefail
 cd "$(dirname "$0")/"
 
 __runtexshebang=../runtexshebang.lua
+whoamimsg=$(${__runtexshebang} --version)
 texfile=$(basename $0 .bash).tex
-falsemsg='TeX-style shebang not found.'
 
 trap testclean EXIT
 testclean(){
@@ -12,6 +12,9 @@ testclean(){
     rm ${texfile}
 }
 
+##
+falsemsg="${whoamimsg}
+TeX-style shebang not found."
 cat>${texfile}<<EOF
 %%1
 %%2
