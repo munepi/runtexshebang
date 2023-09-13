@@ -15,6 +15,8 @@ all: test
 
 .PHONY: test
 test: ## Test runtexshebang.lua
+	test/option_help.bash
+	test/option_version.bash
 	test/shebang_matched.bash
 	test/shebang_not_found.bash
 
@@ -38,7 +40,7 @@ clean:
 
 .PHONY: zip4ctan
 zip4ctan: runtexshebang.zip ## Archived for CTAN upload
-runtexshebang.zip: clean
+runtexshebang.zip: clean test
 	git archive --format=tar --prefix=runtexshebang/ HEAD | gtar -x
 	rm -f runtexshebang/.gitignore runtexshebang/Makefile
 	rm -rf runtexshebang/test
