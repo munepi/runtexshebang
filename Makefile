@@ -35,11 +35,13 @@ uninstall: ## Unnstall runtexshebang
 	rm -rf ${TLTEXMF}/doc/support/runtexshebang/
 	rm -f ${TLBINDIR}/runtexshebang
 
-clean:
+.PHONY: clean
+clean: ## Clean this repository
+	find . -name '*~' -delete
 	rm -f runtexshebang.zip
 
-.PHONY: zip4ctan
-zip4ctan: runtexshebang.zip ## Archived for CTAN upload
+.PHONY: ctanzip
+ctanzip: runtexshebang.zip ## Archive for CTAN upload
 runtexshebang.zip: clean test
 	git archive --format=tar --prefix=runtexshebang/ HEAD | gtar -x
 	rm -f runtexshebang/.gitignore runtexshebang/Makefile
