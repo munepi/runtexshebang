@@ -23,7 +23,7 @@
 -- THE SOFTWARE.
 
 NAME = "runtexshebang"
-VERSION = "20230913 v0.4"
+VERSION = "20231117 v0.5"
 USAGE = [[
 Usage:	runtexshebang [input.tex]
 
