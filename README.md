@@ -28,6 +28,15 @@ colloquially known as the bang, hence the name shebang for TeX/LaTeX.
 
 ### 1. Install `runtexshebang.lua` in your TeX Live system.
 
+The `runtexshebang` package is contained in TeX Live 2023 or higher. 
+So, it can be installed through 
+
+``` shell
+$ sudo tlmgr install runtexshebang
+```
+
+If you manually install `runtexshebang.lua` in your TeX Live system, you can install it through
+
 ``` shell
 cp runtexshebang.lua /some/where/TEXMFDIST_or_TEXMFLOCAL/scripts/runtexshebang/runtexshebang.lua
 
