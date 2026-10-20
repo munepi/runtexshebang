@@ -43,7 +43,7 @@ clean: ## Clean this repository
 ctanzip: runtexshebang.zip ## Archive for CTAN upload
 runtexshebang.zip: clean test
 	git archive --format=tar --prefix=runtexshebang/ HEAD | gtar -x
-	rm -f runtexshebang/.gitignore runtexshebang/Makefile
+	rm -f runtexshebang/.gitignore runtexshebang/Makefile runtexshebang/ctan.toml
 	rm -rf runtexshebang/test
 	zip -9 -r runtexshebang.zip runtexshebang/*
 	rm -rf runtexshebang

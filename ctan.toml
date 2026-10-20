@@ -1,0 +1,53 @@
+# ctan.toml -- metadata for "ctango upload".
+# Keys follow the CTAN submission API: https://ctan.org/help/submit
+# uploader/email are taken from ~/.config/ctango/config.toml or git config.
+
+pkg         = "runtexshebang"
+ctanPath    = "/support/runtexshebang"
+summary     = "A Lua script running LaTeX document files with TeX-style shebang"
+description = '''
+<p>
+In short, a TeX-style shebang (<tt>%#!</tt>) is a special kind
+of TeX comment that you include in your TeX/LaTeX document file
+to tell the operating system's shell how to run the file
+for the rest of the file:
+</p>
+<pre>
+%#!lualatex foo.tex
+\documentclass{article}
+\begin{document}
+Hello, {\LaTeX} World!
+
+Happy {\TeX}ing.
+\end{document}
+</pre>
+<p>
+If you are using a TeX-style shebang, it must appear on the
+line that matched 20 lines or less in your LaTeX document,
+and it has to start with a TeX comment symbol (<tt>%</tt>)
+followed by a hash sign (<tt>#</tt>) and an exclamation mark (<tt>!</tt>),
+colloquially known as the bang, hence the name shebang for TeX/LaTeX.
+</p>
+<p>
+runtexshebang executes the <tt>%#!</tt> line through the system shell,
+so only use it on documents you trust.
+It is a build tool invoked by the user and must not be added to
+<tt>shell_escape_commands</tt>.
+</p>
+'''
+author      = ["Munehiro Yamamoto"]
+license     = ["mit"]
+topic       = ["compilation"]
+home        = ["https://github.com/munepi/runtexshebang"]
+bugtracker  = ["https://github.com/munepi/runtexshebang/issues"]
+# support     = "https://..."
+repository  = ["https://github.com/munepi/runtexshebang.git"]
+# development = "https://..."
+
+archive     = "runtexshebang.zip"  # built by "make ctanzip"
+
+# The version and its date are read from the VERSION line of this file,
+# e.g.  local VERSION = "2026-10-21 v0.6"
+[version]
+file    = "runtexshebang.lua"
+pattern = 'VERSION\s*=\s*"(?P<date>\d{4}-\d{2}-\d{2})\s+v(?P<version>[^"\s]+)"'
