@@ -15,11 +15,7 @@ all:
 
 .PHONY: test
 test: ## Test runtexshebang.lua
-	test/option_help.bash
-	test/option_version.bash
-	test/option_dryrun.bash
-	test/shebang_matched.bash
-	test/shebang_not_found.bash
+	texlua test/run.lua
 
 .PHONY: install
 install: ## Install runtexshebang
@@ -40,6 +36,7 @@ uninstall: ## Unistall runtexshebang
 .PHONY: clean
 clean: ## Clean this repository
 	find . -type f -name '*~' -delete
+	rm -rf test/tmp
 	rm -rf runtexshebang.zip runtexshebang
 
 .PHONY: ctanzip
