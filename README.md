@@ -76,10 +76,10 @@ To see which command would be run without running it, use `runtexshebang --dry-r
 
 1. Open "Typesetting" tab in TeXworks Preferences.
 2. Add the tool configuration "runtexshebang" in "Processing tools" as below.
-        - Name: `runtexshebang`
-        - Program: `runtexshebang`
-        - Arguments: `$fullname`
-        - ☑ View PDF after running (if necessary)
+    - Name: `runtexshebang`
+    - Program: `runtexshebang`
+    - Arguments: `$fullname`
+    - Check "View PDF after running" (if necessary)
 
 #### LaTeX document in the internal editor of TeXwork
 

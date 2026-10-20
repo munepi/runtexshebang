@@ -18,11 +18,11 @@ test: ## Test runtexshebang.lua
 	texlua test/run.lua
 
 .PHONY: install
-install: ## Install runtexshebang
+install: runtexshebang.pdf ## Install runtexshebang
 	mkdir -p ${TLTEXMF}/scripts/runtexshebang/
 	mkdir -p ${TLTEXMF}/doc/support/runtexshebang/
 	cp -a runtexshebang.lua ${TLTEXMF}/scripts/runtexshebang/
-	cp -a README.md LICENSE ${TLTEXMF}/doc/support/runtexshebang/
+	cp -a README.md LICENSE runtexshebang.pdf ${TLTEXMF}/doc/support/runtexshebang/
 
 	cd ${TLBINDIR}/ && \
 		ln -f -s ${TLTEXMF}/scripts/runtexshebang/runtexshebang.lua runtexshebang
@@ -37,13 +37,21 @@ uninstall: ## Unistall runtexshebang
 clean: ## Clean this repository
 	find . -type f -name '*~' -delete
 	rm -rf test/tmp
-	rm -rf runtexshebang.zip runtexshebang
+	rm -rf runtexshebang.zip runtexshebang runtexshebang.pdf
 
 .PHONY: ctanzip
 ctanzip: runtexshebang.zip ## Archive for CTAN upload
-runtexshebang.zip: clean test
+runtexshebang.zip: clean test runtexshebang.pdf
 	git archive --format=tar --prefix=runtexshebang/ HEAD | gtar -x
 	rm -f runtexshebang/.gitignore runtexshebang/Makefile runtexshebang/ctan.toml
 	rm -rf runtexshebang/test
+	cp runtexshebang.pdf runtexshebang/
 	zip -9 -r runtexshebang.zip runtexshebang/*
 	rm -rf runtexshebang
+
+.PHONY: doc
+doc: runtexshebang.pdf ## Build the PDF documentation from README.md (needs pandoc and lualatex)
+runtexshebang.pdf: README.md
+	pandoc $< -o $@ --pdf-engine=lualatex --shift-heading-level-by=-1 \
+		-V CJKmainfont=HaranoAjiMincho -V geometry:margin=25mm -V colorlinks=true \
+		-V 'header-includes=\usepackage{fvextra}\AtBeginDocument{\DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}}\ltjsetparameter{jacharrange={-9}}'
