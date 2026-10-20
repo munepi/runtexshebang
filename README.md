@@ -65,6 +65,7 @@ runtexshebang foo.tex
 ```
 
 Then, it will run `lualatex foo.tex`.
+To see which command would be run without running it, use `runtexshebang --dry-run foo.tex`.
 
 
 ## Examples
@@ -163,6 +164,50 @@ You can typeset a LaTeX document file in a Docker container as below.
 ``` latex
 %#! docker run -i --rm --workdir /data --mount type=bind,src=$(pwd)/,dst=/data/   bar/foo     lualatex foo
 ```
+
+
+## Security
+
+* **runtexshebang executes the `%#!` line of your document as a shell command line**
+  (`/bin/sh -c` on Unix, `cmd.exe /c` on Windows).
+  Running `runtexshebang foo.tex` is equivalent to typing the contents of its `%#!` line
+  into your terminal yourself.
+  Treat `.tex` files with a `%#!` line exactly like a `Makefile` or a `latexmkrc`:
+  read the first lines before running them, and only use runtexshebang on documents you trust.
+* **Editor integration widens the exposure.**
+  Once you have registered runtexshebang as a typesetting tool or engine,
+  every document that carries `% !TEX program = runtexshebang` and a `%#!` line
+  will execute that line when you press "Typeset".
+  Review the `%#!` line of documents you received from others.
+  runtexshebang prints `runtexshebang: running: <command>` on stderr (the editor console)
+  before executing it, and `runtexshebang --dry-run foo.tex` prints the line without executing it.
+* **runtexshebang must never be added to `shell_escape_commands` in `texmf.cnf`**
+  (or to any other restricted-shell-escape allow list).
+  If it were, any document compiled with the default restricted shell escape could run
+  arbitrary commands via `\write18{runtexshebang evil.tex}`.
+  It is intentionally absent from that list and is not designed to be called from `\write18`.
+  It is a build tool that the user invokes, like `make`, `latexmk`, `arara` or `llmk`.
+* runtexshebang loads no Lua code (no `require`, no `dofile`) and reads no configuration file.
+  Its behaviour depends only on its command-line arguments, the first 20 lines of the given file,
+  and the environment (`PATH`, `COMSPEC`).
+* The command is located through your `PATH`.
+  On Windows, `cmd.exe` normally looks in the current directory first,
+  so an executable placed next to the document could shadow a TeX Live program
+  named on the shebang line.
+  runtexshebang sets `NoDefaultCurrentDirectoryInExePath=1` before running the command
+  to switch that lookup off.
+* Tampering with `runtexshebang.lua` itself requires write access to the TeX Live tree,
+  the same as for any other program shipped with TeX Live;
+  that is covered by `tlmgr`'s signature verification, not by this script.
+* The exit status of the executed command is passed through,
+  so editors and `make` can detect failures.
+  runtexshebang itself exits 1 on usage or file errors
+  and 2 when no `%#!` line is found in the first 20 lines.
+* Only lines that start with `%#!` in column 1 are recognised;
+  `% #!` and ` %#!` are ignored on purpose,
+  which lets you keep alternative command lines in the file as plain comments.
+  A UTF-8 byte order mark before `%#!` on the first line is ignored,
+  and CRLF line endings are handled on every platform.
 
 
 ## References
