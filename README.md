@@ -228,7 +228,8 @@ Enjoy Happy TeXing!
 
 ## License
 
-This program is licensed under the terms of the MIT License.
+This program is licensed under the conditions of the LaTeX Project Public License,
+either version 1.3c of this license or any later version.
 
 --------------------
 

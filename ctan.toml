@@ -36,7 +36,7 @@ It is a build tool invoked by the user and must not be added to
 </p>
 '''
 author      = ["Munehiro Yamamoto"]
-license     = ["mit"]
+license     = ["lppl1.3c"]
 topic       = ["compilation"]
 home        = ["https://github.com/munepi/runtexshebang"]
 bugtracker  = ["https://github.com/munepi/runtexshebang/issues"]
