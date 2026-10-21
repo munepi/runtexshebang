@@ -36,7 +36,7 @@
 --   shell escape via \write18{runtexshebang evil.tex}.
 
 local NAME = "runtexshebang"
-local VERSION = "2026-10-21 v1.0"
+local VERSION = "2026-10-21 v1.1"
 local MAXLINES = 20
 local USAGE = [[
 Usage:	runtexshebang [options] [--] input.tex
