@@ -23,6 +23,10 @@
 --   Running it on a document is equivalent to typing that line yourself:
 --   only use it on documents you trust.  The command is printed on stderr
 --   before it is executed; "--dry-run" prints it without executing it.
+-- * A "%#!" line containing an ASCII control character other than TAB is
+--   refused, with or without "--dry-run": a CR or an escape sequence could
+--   make the printed command differ from the one the shell runs.  Bytes
+--   >= 0x80 are not checked so that Shift_JIS and EUC-JP lines still work.
 -- * It never calls require or dofile, reads no configuration file and
 --   writes nothing.  Its behaviour depends only on its arguments, the
 --   first MAXLINES lines of the input file and the environment
@@ -45,8 +49,10 @@ Options:
 The TeX-style shebang line is the first line within the first 20 lines of
 input.tex that starts with "%#!" in column 1.  The rest of that line is
 executed through the system shell, so only use runtexshebang on documents
-you trust.  The exit status of that command is passed through; runtexshebang
-itself exits 1 on usage or file errors and 2 when no shebang line is found.
+you trust.  A shebang line containing a control character other than TAB is
+refused.  The exit status of that command is passed through; runtexshebang
+itself exits 1 on usage or file errors and 2 when no usable shebang line is
+found.
 
 See also:
 The command
@@ -196,6 +202,12 @@ if cmd == nil then
 end
 if cmd == "" then
   die(2, "TeX-style shebang line is empty.")
+end
+-- A CR, an escape sequence and the like could hide the real command from
+-- the "running:" line and from --dry-run, so refuse them.
+if cmd:find("[%z\1-\8\10-\31\127]") then
+  die(2, "TeX-style shebang line contains a control character, refusing to run it: "
+         .. string.format("%q", cmd))
 end
 
 if is_dryrun then

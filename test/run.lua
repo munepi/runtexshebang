@@ -242,9 +242,69 @@ case("no_require", function()
   local f = assert(io.open(SCRIPT, "rb"))
   local src = f:read("a")
   f:close()
-  for _, pat in ipairs({ "require%s*[%(%'\"]", "dofile%s*%(", "loadfile%s*%(", "loadstring%s*%(",
-                         "%f[%w_]load%s*%(", "kpse%.", "package%." }) do
-    if src:find(pat) then fail("no code loading", "script matches " .. show(pat)) end
+  -- Drop "--" comments (the header mentions require and dofile), but only
+  -- where no quote precedes them on the line, so that "--dry-run" and the
+  -- like inside string literals do not hide the rest of a line.
+  src = src:gsub("[^\n]*", function(line)
+    local pos = line:find("--", 1, true)
+    if pos and not line:sub(1, pos - 1):find("[\"']") then return line:sub(1, pos - 1) end
+    return line
+  end)
+  -- Match the bare names so that indirect uses such as pcall(require, ...)
+  -- or local r = require are caught as well.
+  for _, name in ipairs({ "require", "dofile", "loadfile", "loadstring", "load", "kpse", "package" }) do
+    if src:find("%f[%w_]" .. name .. "%f[^%w_]") then fail("no code loading", "script uses " .. name) end
+  end
+end)
+
+case("no_cwd_modules", function()
+  -- Modules planted next to the document must never be loaded: each one
+  -- leaves a marker file behind if it is.
+  local names = { "lfs", "kpse", "string", "os", "io", "unicode", "lualibs", "runtexshebang" }
+  for _, name in ipairs(names) do
+    write_file(name .. ".lua", string.format(
+      "local f = io.open(%q, 'w') if f then f:write('x') f:close() end\n", "loaded-" .. name .. ".txt"))
+    created[#created + 1] = "loaded-" .. name .. ".txt"
+  end
+  write_file("cwd.tex", "%#!echo ok\n")
+  local r = run({ "cwd.tex" })
+  eq(r.code, 0, "exit")
+  eq(r.out, banner .. "\nok\n", "stdout")
+  r = run({ "--dry-run", "cwd.tex" })
+  eq(r.code, 0, "dry-run exit")
+  for _, name in ipairs(names) do
+    local f = io.open("loaded-" .. name .. ".txt", "rb")
+    if f then
+      f:close()
+      fail("no cwd modules", name .. ".lua in the current directory was loaded")
+    end
+  end
+end)
+
+case("shebang_control_chars", function()
+  for _, body in ipairs({ "%#!echo PWNED #\rlualatex foo.tex\n", "%#!echo a\27[8m b\n",
+                          "%#!echo a\0b\n", "%#!echo a\127b\n", "%#!echo a\fb\n" }) do
+    write_file("ctrl.tex", body)
+    for _, args in ipairs({ { "ctrl.tex" }, { "--dry-run", "ctrl.tex" } }) do
+      local label = table.concat(args, " ") .. " " .. show(body)
+      local r = run(args)
+      eq(r.code, 2, label .. ": exit")
+      contains(r.err, "control character", label .. ": stderr")
+      eq(r.out, banner .. "\n", label .. ": nothing executed or printed")
+    end
+  end
+
+  write_file("tab.tex", "%#!echo\ttab ok\n")
+  local r = run({ "tab.tex" })
+  eq(r.code, 0, "TAB is allowed: exit")
+  eq(r.out, banner .. "\ntab ok\n", "TAB is allowed: stdout")
+
+  -- UTF-8 and Shift_JIS ("\130\160\149\92" is "あ表") are passed unchanged.
+  for _, cmd in ipairs({ "echo あ", "echo \130\160\149\92" }) do
+    write_file("mb.tex", "%#!" .. cmd .. "\n")
+    r = run({ "--dry-run", "mb.tex" })
+    eq(r.code, 0, "non-ASCII " .. show(cmd) .. ": exit")
+    eq(r.out, banner .. "\n" .. cmd .. "\n", "non-ASCII " .. show(cmd) .. ": stdout")
   end
 end)
 

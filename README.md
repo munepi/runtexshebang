@@ -181,6 +181,11 @@ You can typeset a LaTeX document file in a Docker container as below.
   Review the `%#!` line of documents you received from others.
   runtexshebang prints `runtexshebang: running: <command>` on stderr (the editor console)
   before executing it, and `runtexshebang --dry-run foo.tex` prints the line without executing it.
+* A `%#!` line that contains an ASCII control character other than TAB
+  (for example a lone carriage return or an escape sequence) is refused with exit status 2,
+  both when running and with `--dry-run`,
+  because such characters could make the printed command look different from the one actually run.
+  Non-ASCII bytes are left alone, so UTF-8, Shift_JIS and EUC-JP file names keep working.
 * **runtexshebang must never be added to `shell_escape_commands` in `texmf.cnf`**
   (or to any other restricted-shell-escape allow list).
   If it were, any document compiled with the default restricted shell escape could run
